@@ -1,0 +1,5 @@
+vendor/
+.env
+config/db.php
+*.log
+node_modules/

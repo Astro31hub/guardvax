@@ -1,0 +1,4 @@
+# Block ALL direct HTTP access to this directory
+Options -Indexes
+Order deny,allow
+Deny from all
