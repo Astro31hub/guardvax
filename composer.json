@@ -1,14 +1,19 @@
 {
-  "name": "guardvax/hospital-system",
-  "description": "GuardVAX Hospital Vaccination & Health Data Management System",
-  "type": "project",
-  "require": {
-    "php": ">=8.0",
-    "dompdf/dompdf": "^2.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "GuardVAX\\": "src/"
+    "name": "guardvax/hospital-system",
+    "description": "GuardVAX Hospital Vaccination & Health Data Management System",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "dompdf/dompdf": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "GuardVAX\\": "src/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.4.0"
+        }
     }
-  }
 }
