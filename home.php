@@ -335,7 +335,7 @@ $siteUrl = SITE_URL;
     </div>
   </div>
 </div>
-
+  
 <!-- ── Main Navbar ── -->
 <nav class="main-nav">
   <div class="container d-flex align-items-center justify-content-between">
