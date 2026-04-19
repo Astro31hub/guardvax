@@ -205,7 +205,7 @@ function sendEmail(string $to, string $subject, string $body): bool
     $apiKey = 'xsmtpsib-9c7c9c71037408e93bf93d93b982c06baf6684775957698dd19012071f424748-jaBuTCY7iKMod8EK';
     
     $data = [
-        'sender'     => ['name' => 'GuardVAX', 'email' => 'tisoyangelo31@gmail.com'],
+        'sender'     => ['name' => 'GuardVAX', 'email' => 'magtisoy@tip.edu.ph'],
         'to'         => [['email' => $to]],
         'subject'    => $subject,
         'htmlContent'=> $body
