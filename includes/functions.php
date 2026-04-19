@@ -209,18 +209,15 @@ function sendEmail(string $to, string $subject, string $body): bool
         $mail->Host       = 'smtp-relay.brevo.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'a88eed001@smtp-brevo.com';
-        $mail->Password   = 'xsmtpsib-9c7c9c71037408e93bf93d93b982c06baf6684775957698dd19012071f424748-jaBuTCY7iKMod8EK'; // ← paste your Brevo SMTP key here
+        $mail->Password   = 'xsmtpsib-9c7c9c71037408e93bf93d93b982c06baf6684775957698dd19012071f424748-jaBuTCY7iKMod8EK';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
-
-        $mail->setFrom('tisoyangelo31@gmail.com', SITE_NAME);
+        $mail->setFrom('tisoyangelo31@gmail.com', 'GuardVAX');
         $mail->addAddress($to);
-
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body    = $body;
         $mail->AltBody = strip_tags($body);
-
         $mail->send();
         return true;
     } catch (Exception $e) {
