@@ -202,13 +202,13 @@ function calculateAge(string $dob): int
 
 function sendEmail(string $to, string $subject, string $body): bool
 {
-    $apiKey = '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';
+    $apiKey = getenv('BREVO_API_KEY');
     
     $data = [
-        'sender'     => ['name' => 'GuardVAX', 'email' => 'magtisoy@tip.edu.ph'],
-        'to'         => [['email' => $to]],
-        'subject'    => $subject,
-        'htmlContent'=> $body
+        'sender'      => ['name' => 'GuardVAX', 'email' => 'magtisoy@tip.edu.ph'],
+        'to'          => [['email' => $to]],
+        'subject'     => $subject,
+        'htmlContent' => $body
     ];
 
     $ch = curl_init('https://api.brevo.com/v3/smtp/email');
@@ -223,6 +223,8 @@ function sendEmail(string $to, string $subject, string $body): bool
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
+
+    error_log("Brevo Response Code: " . $httpCode . " Response: " . $response);
 
     if ($httpCode !== 201) {
         error_log("Brevo API Error: " . $response);
