@@ -44,15 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'login
 
         } else {
 
-            // ── ADMIN — skip 2FA, login directly ────────────
-            if ($user['role_id'] == 1) {
+// ── ADMIN — skip 2FA, login directly ────────────
+if ($user['role_name'] === 'admin') {
     loginUser($user);
     auditLog('LOGIN_SUCCESS', 'users', $user['id'], 'Admin login — 2FA bypassed');
     redirect(dashboardPath('admin'));
 }
 
-            // ── NURSE & PATIENT — require 2FA ────────────────
-            $code = generateVerificationCode($user['id'], '2fa_login');
+// ── NURSE & PATIENT — require 2FA ────────────────
+$code = generateVerificationCode($user['id'], '2fa_login');
             sendVerificationEmail($user['email'], $user['name'], $code, '2fa_login');
 
             $_SESSION['pending_user_id']    = $user['id'];
