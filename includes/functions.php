@@ -203,7 +203,7 @@ function calculateAge(string $dob): int
 function sendEmail(string $to, string $subject, string $body): bool
 {
     $apiKey = getenv('BREVO_API_KEY');
-    
+
     $data = [
         'sender'      => ['name' => 'GuardVAX', 'email' => 'magtisoy@tip.edu.ph'],
         'to'          => [['email' => $to]],
@@ -215,6 +215,7 @@ function sendEmail(string $to, string $subject, string $body): bool
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
         'api-key: ' . $apiKey
@@ -222,13 +223,12 @@ function sendEmail(string $to, string $subject, string $body): bool
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $response  = curl_exec($ch);
+    $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
     curl_close($ch);
 
-    // Write debug to file
-    $debug = "API Key: " . substr($apiKey, 0, 20) . "...\n";
+    $debug  = "API Key: " . substr($apiKey, 0, 20) . "...\n";
     $debug .= "HTTP Code: $httpCode\n";
     $debug .= "Curl Error: $curlError\n";
     $debug .= "Response: $response\n";
