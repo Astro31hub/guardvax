@@ -99,7 +99,6 @@ function generateVerificationCode(int $userId, string $purpose = 'email_verify')
     $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
     $expires = date('Y-m-d H:i:s', strtotime('+' . VERIFY_CODE_TTL . ' minutes'));
 
-    // Invalidate old codes of same purpose
     $stmt = db()->prepare('UPDATE verification_codes SET used = 1 WHERE user_id = ? AND purpose = ? AND used = 0');
     $stmt->execute([$userId, $purpose]);
 
@@ -121,7 +120,6 @@ function verifyCode(int $userId, string $code, string $purpose = 'email_verify')
 
     if (!$row) return false;
 
-    // Mark as used
     $stmt = db()->prepare('UPDATE verification_codes SET used = 1 WHERE id = ?');
     $stmt->execute([$row['id']]);
     return true;
@@ -200,38 +198,32 @@ function calculateAge(string $dob): int
     return (int) date_diff(date_create($dob), date_create('today'))->y;
 }
 
-// ── Simple Email Sender (uses PHP mail()) ────────────────────
+// ── Email Sender ─────────────────────────────────────────────
 
 function sendEmail(string $to, string $subject, string $body): bool
 {
     $mail = new PHPMailer(true);
 
     try {
-        // --- Server Settings ---
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->Host       = MAIL_HOST;
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'tisoyangelo31@gmail.com'; 
-        $mail->Password   = 'sqpb irll urps ogkl'; // Your App Password
+        $mail->Username   = MAIL_USERNAME;
+        $mail->Password   = MAIL_PASSWORD;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        $mail->Port       = MAIL_PORT;
 
-        // --- Recipients ---
-        // SITE_EMAIL and SITE_NAME are constants from your config/db.php
-        $mail->setFrom(SITE_EMAIL, SITE_NAME);
+        $mail->setFrom(MAIL_FROM, SITE_NAME);
         $mail->addAddress($to);
 
-        // --- Content ---
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body    = $body;
-        // Plain text version for non-HTML email clients
-        $mail->AltBody = strip_tags($body); 
+        $mail->AltBody = strip_tags($body);
 
         $mail->send();
         return true;
     } catch (Exception $e) {
-        // Log the error so you can debug if it fails
         error_log("PHPMailer Error: " . $mail->ErrorInfo);
         return false;
     }
@@ -239,7 +231,6 @@ function sendEmail(string $to, string $subject, string $body): bool
 
 function sendVerificationEmail(string $toEmail, string $toName, string $code, string $purpose = 'email_verify'): bool
 {
-    
     $subject = match($purpose) {
         '2fa_login'      => SITE_NAME . ' — Login Verification Code',
         'password_reset' => SITE_NAME . ' — Password Reset Code',
