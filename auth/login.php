@@ -3,11 +3,7 @@
 // auth/login.php — Login + 2FA (Email Code Verification)
 // Admin bypasses 2FA and logs in directly
 // ============================================================
-if (file_exists('/tmp/brevo_debug.txt')) {
-    echo '<pre style="background:yellow;padding:10px;position:fixed;top:0;left:0;z-index:9999;max-width:100%">' 
-       . htmlspecialchars(file_get_contents('/tmp/brevo_debug.txt'))
-       . '</pre>';
-}
+
 require_once __DIR__ . '/../includes/auth.php';
 
 startSecureSession();
