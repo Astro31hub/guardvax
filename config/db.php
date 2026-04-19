@@ -53,17 +53,17 @@ session_set_save_handler(new DBSessionHandler(), true);
 
 // ── Email Configuration ──────────────────────────────────────
 define('MAIL_FROM',     getenv('MAIL_FROM')     ?: 'tisoyangelo31@gmail.com');
-define('MAIL_HOST',     getenv('MAIL_HOST')     ?: 'smtp.gmail.com');
+define('MAIL_HOST',     getenv('MAIL_HOST')     ?: 'smtp-relay.brevo.com');
 define('MAIL_PORT',     (int)(getenv('MAIL_PORT') ?: 587));
-define('MAIL_USERNAME', getenv('MAIL_USERNAME') ?: 'tisoyangelo31@gmail.com');
-define('MAIL_PASSWORD', getenv('MAIL_PASSWORD') ?: 'sqpb irll urps ogkl');
+define('MAIL_USERNAME', getenv('MAIL_USERNAME') ?: 'a88eed001@smtp-brevo.com');
+define('MAIL_PASSWORD', getenv('MAIL_PASSWORD') ?: 'xsmtpsib-9c7c9c71037408e93bf93d93b982c06baf6684775957698dd19012071f424748-jaBuTCY7iKMod8EK');
 
 // ── Database Configuration ───────────────────────────────────
 define('DB_HOST',    getenv('MYSQLHOST')     ?: 'hopper.proxy.rlwy.net');
 define('DB_PORT',    getenv('MYSQLPORT')     ?: '28897');
 define('DB_NAME',    getenv('MYSQLDATABASE') ?: 'railway');
 define('DB_USER',    getenv('MYSQLUSER')     ?: 'root');
-define('DB_PASS',    getenv('MYSQLPASSWORD') ?: 'sqpb irll urps ogkl'); // ← fix empty fallback... wait, this is DB not mail
+define('DB_PASS',    getenv('MYSQLPASSWORD') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 // ── Application Configuration ────────────────────────────────
