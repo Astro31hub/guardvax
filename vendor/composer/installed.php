@@ -3,7 +3,7 @@
         'name' => 'guardvax/hospital-system',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6050ac0855d2a20ab1e4b8cb232d8b3c21692ab2',
+        'reference' => 'b3791429e121bbd16adab7944908415dc173c1a1',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'guardvax/hospital-system' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '6050ac0855d2a20ab1e4b8cb232d8b3c21692ab2',
+            'reference' => 'b3791429e121bbd16adab7944908415dc173c1a1',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

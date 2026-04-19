@@ -26,6 +26,9 @@ define('SESSION_LIFETIME', 3600);
 define('VERIFY_CODE_TTL',  15);
 define('DOMPDF_PATH', __DIR__ . '/../vendor/dompdf/autoload.inc.php');
 
+/**
+ * Database Connection using PDO
+ */
 function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
@@ -33,19 +36,25 @@ function db(): PDO {
             'mysql:host=%s;port=%s;dbname=%s;charset=%s',
             DB_HOST, DB_PORT, DB_NAME, DB_CHARSET
         );
+        
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
+
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
-            // Timezone fix
+            
+            // Sync PHP timezone with MySQL timezone
             $offset = (new DateTime())->format('P');
             $pdo->exec("SET time_zone='{$offset}'");
+            
         } catch (PDOException $e) {
+            // If on Railway, we want to see the error. 
+            // In a real production app, you'd log this instead of 'die'
             die('<div style="padding:2rem;color:red;font-family:monospace">
-                <strong>DB Error:</strong> ' . htmlspecialchars($e->getMessage()) . '
+                <strong>Database Connection Error:</strong> ' . htmlspecialchars($e->getMessage()) . '
             </div>');
         }
     }
