@@ -10,23 +10,20 @@ require_once __DIR__ . '/functions.php';
  * Authenticate user credentials.
  * Returns user array on success, or null on failure.
  */
-function authenticateUser(string $email, string $password): ?array
-{
-    $stmt = db()->prepare(
-        'SELECT u.*, r.name AS role_name
-         FROM users u
-         JOIN roles r ON r.id = u.role_id
-         WHERE u.email = ? AND u.status != "inactive"
-         LIMIT 1'
-    );
+function authenticateUser($email, $password) {
+    $stmt = db()->prepare("
+        SELECT u.*, r.name as role_name    
+        FROM users u 
+        JOIN roles r ON u.role_id = r.id   
+        WHERE u.email = ?
+    ");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
-    if (!$user || !password_verify($password, $user['password'])) {
-        return null;
+    if ($user && password_verify($password, $user['password'])) {
+        return $user;                       
     }
-
-    return $user;
+    return false;
 }
 
 /**
