@@ -202,7 +202,7 @@ function calculateAge(string $dob): int
 
 function sendEmail(string $to, string $subject, string $body): bool
 {
-    $apiKey = 'xsmtpsib-9c7c9c71037408e93bf93d93b982c06baf6684775957698dd19012071f424748-jaBuTCY7iKMod8EK';
+    $apiKey = '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';
     
     $data = [
         'sender'     => ['name' => 'GuardVAX', 'email' => 'magtisoy@tip.edu.ph'],
