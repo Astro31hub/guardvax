@@ -202,28 +202,34 @@ function calculateAge(string $dob): int
 
 function sendEmail(string $to, string $subject, string $body): bool
 {
-    $mail = new PHPMailer(true);
+    $apiKey = 'xsmtpsib-9c7c9c71037408e93bf93d93b982c06baf6684775957698dd19012071f424748-jaBuTCY7iKMod8EK';
+    
+    $data = [
+        'sender'     => ['name' => 'GuardVAX', 'email' => 'tisoyangelo31@gmail.com'],
+        'to'         => [['email' => $to]],
+        'subject'    => $subject,
+        'htmlContent'=> $body
+    ];
 
-    try {
-        $mail->isSMTP();
-        $mail->Host       = 'smtp-relay.brevo.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'a88eed001@smtp-brevo.com';
-        $mail->Password   = 'xsmtpsib-9c7c9c71037408e93bf93d93b982c06baf6684775957698dd19012071f424748-jaBuTCY7iKMod8EK';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port       = 465;
-        $mail->setFrom('tisoyangelo31@gmail.com', 'GuardVAX');
-        $mail->addAddress($to);
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body    = $body;
-        $mail->AltBody = strip_tags($body);
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        error_log("PHPMailer Error: " . $mail->ErrorInfo);
+    $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'api-key: ' . $apiKey
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode !== 201) {
+        error_log("Brevo API Error: " . $response);
         return false;
     }
+
+    return true;
 }
 
 function sendVerificationEmail(string $toEmail, string $toName, string $code, string $purpose = 'email_verify'): bool
