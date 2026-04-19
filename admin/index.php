@@ -29,13 +29,15 @@ $recentVacc = db()->query(
 )->fetchAll();
 
 // Monthly vaccinations (last 6 months)
+// Monthly vaccinations (last 6 months)
+// Monthly vaccinations (last 6 months)
 $monthlyData = db()->query(
     "SELECT DATE_FORMAT(date_given,'%b %Y') AS month_label,
             DATE_FORMAT(date_given,'%Y-%m') AS month_key,
             COUNT(*) AS cnt
      FROM vaccinations
      WHERE date_given >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-     GROUP BY month_key ORDER BY month_key ASC"
+     GROUP BY month_key, month_label ORDER BY month_key ASC"
 )->fetchAll();
 
 // Vaccine distribution
