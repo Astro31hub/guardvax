@@ -219,15 +219,24 @@ function sendEmail(string $to, string $subject, string $body): bool
         'Content-Type: application/json',
         'api-key: ' . $apiKey
     ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
     curl_close($ch);
 
-    error_log("Brevo Response Code: " . $httpCode . " Response: " . $response);
+    // Write debug to file
+    $debug = "API Key: " . substr($apiKey, 0, 20) . "...\n";
+    $debug .= "HTTP Code: $httpCode\n";
+    $debug .= "Curl Error: $curlError\n";
+    $debug .= "Response: $response\n";
+    $debug .= "To: $to\n";
+    file_put_contents('/tmp/brevo_debug.txt', $debug);
 
     if ($httpCode !== 201) {
-        error_log("Brevo API Error: " . $response);
+        error_log("Brevo FAILED - Code: $httpCode Error: $curlError Response: $response");
         return false;
     }
 

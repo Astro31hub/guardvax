@@ -3,12 +3,15 @@
 // auth/login.php — Login + 2FA (Email Code Verification)
 // Admin bypasses 2FA and logs in directly
 // ============================================================
-
+if (file_exists('/tmp/brevo_debug.txt')) {
+    echo '<pre style="background:yellow;padding:10px;position:fixed;top:0;left:0;z-index:9999;max-width:100%">' 
+       . htmlspecialchars(file_get_contents('/tmp/brevo_debug.txt'))
+       . '</pre>';
+}
 require_once __DIR__ . '/../includes/auth.php';
 
 startSecureSession();
 
-// Already logged in? redirect.
 if (isLoggedIn()) {
     $user = getCurrentUser();
     redirect(dashboardPath($user['role_name']));
@@ -18,7 +21,6 @@ $errors  = [];
 $step    = $_SESSION['login_step'] ?? 1;
 $message = '';
 
-// Flash from redirect
 $msg = $_GET['msg'] ?? '';
 if ($msg === 'logged_out')  $message = 'You have been logged out.';
 if ($msg === 'session_exp') $message = 'Your session has expired. Please login again.';
@@ -44,15 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'login
 
         } else {
 
-// ── ADMIN — skip 2FA, login directly ────────────
-if ($user['role_name'] === 'admin') {
-    loginUser($user);
-    auditLog('LOGIN_SUCCESS', 'users', $user['id'], 'Admin login — 2FA bypassed');
-    redirect(dashboardPath('admin'));
-}
+            // ── ADMIN — skip 2FA ──────────────────────────────
+            if ($user['role_name'] === 'admin') {
+                loginUser($user);
+                auditLog('LOGIN_SUCCESS', 'users', $user['id'], 'Admin login — 2FA bypassed');
+                redirect(dashboardPath('admin'));
+            }
 
-// ── NURSE & PATIENT — require 2FA ────────────────
-$code = generateVerificationCode($user['id'], '2fa_login');
+            // ── NURSE & PATIENT — require 2FA ─────────────────
+            $code = generateVerificationCode($user['id'], '2fa_login');
             sendVerificationEmail($user['email'], $user['name'], $code, '2fa_login');
 
             $_SESSION['pending_user_id']    = $user['id'];
@@ -113,7 +115,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'resen
     $step = 2;
 }
 
-// Cancel step 2
 if (isset($_GET['cancel'])) {
     unset(
         $_SESSION['pending_user_id'],
@@ -148,7 +149,6 @@ if ($step === 2 && !empty($_SESSION['pending_user_email'])) {
 
 <div class="auth-split">
 
-  <!-- Left Panel -->
   <div class="auth-panel-left d-none d-lg-flex">
     <div class="auth-hero">
       <div class="auth-hero-icon">🛡️</div>
@@ -163,13 +163,11 @@ if ($step === 2 && !empty($_SESSION['pending_user_email'])) {
     </div>
   </div>
 
-  <!-- Right Panel -->
   <div class="auth-panel-right">
     <div class="auth-card">
       <div class="auth-logo d-lg-none">🛡️ <strong>HCARE</strong></div>
 
       <?php if ($step === 1): ?>
-      <!-- ── Step 1: Credentials ── -->
       <h2 class="auth-title">Welcome back</h2>
       <p class="auth-subtitle">Sign in to your account</p>
 
@@ -228,7 +226,6 @@ if ($step === 2 && !empty($_SESSION['pending_user_email'])) {
            class="text-primary fw-semibold">Create account here</a>
       </p>
 
-      <!-- Patient info -->
       <div class="alert alert-light border mt-2 small text-muted py-2 px-3">
         <i class="bi bi-person-heart me-1 text-primary"></i>
         <strong class="text-dark">Patient?</strong>
@@ -238,7 +235,6 @@ if ($step === 2 && !empty($_SESSION['pending_user_email'])) {
       </div>
 
       <?php else: ?>
-      <!-- ── Step 2: OTP ── -->
       <div class="text-center mb-3">
         <div class="otp-icon">📧</div>
       </div>
