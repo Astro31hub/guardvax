@@ -239,6 +239,7 @@ function sendEmail(string $to, string $subject, string $body): bool
 
 function sendVerificationEmail(string $toEmail, string $toName, string $code, string $purpose = 'email_verify'): bool
 {
+    
     $subject = match($purpose) {
         '2fa_login'      => SITE_NAME . ' — Login Verification Code',
         'password_reset' => SITE_NAME . ' — Password Reset Code',
